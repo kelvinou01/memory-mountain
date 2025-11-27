@@ -81,7 +81,6 @@ def visualize(output: str = "plot.html"):
         showscale=True,
         colorbar=dict(
             title="Throughput (MB/s)",
-
             thickness=15,
             len=0.6,
             x=0.98
@@ -90,21 +89,39 @@ def visualize(output: str = "plot.html"):
         hovertemplate='Stride: %{x:.1f}<br>Size (log2): %{y:.1f}<br>Throughput: %{z:.2f} MB/s<extra></extra>'
     ))
     
-    # Add scatter plot of actual data points
+
+    # Add red lines tracing the ridges at cache boundaries
+    y_log_192kb = np.log2(192 * 1024)
+    y_log_12mb = np.log2(12 * 1024 * 1024)
+    
+    # Line at 192KB - interpolate Z values along this Y
+    x_line_192kb = np.linspace(X.min(), X.max(), 100)
+    z_line_192kb = griddata((X, Y_log), Z, (x_line_192kb, np.full_like(x_line_192kb, y_log_192kb)), method='linear')
+    
     fig.add_trace(go.Scatter3d(
-        x=X,
-        y=Y_log,
-        z=Z,
-        mode='markers',
-        marker=dict(
-            size=4,
-            color=Z,
-            colorscale='Viridis',
-            showscale=False,
-            opacity=0.8
-        ),
-        name='Data Points',
-        hovertemplate='Stride: %{x:.1f}<br>Size (log2): %{y:.1f}<br>Throughput: %{z:.2f} MB/s<extra></extra>'
+        x=x_line_192kb,
+        y=np.full_like(x_line_192kb, y_log_192kb),
+        z=z_line_192kb,
+        mode='lines',
+        line=dict(color='red', width=5),
+        name='L1/L2 Boundary (192KB)',
+        legendrank=1,
+        hovertemplate='L1/L2 Boundary<extra></extra>'
+    ))
+    
+    # Line at 12MB - interpolate Z values along this Y
+    x_line_12mb = np.linspace(X.min(), X.max(), 100)
+    z_line_12mb = griddata((X, Y_log), Z, (x_line_12mb, np.full_like(x_line_12mb, y_log_12mb)), method='linear')
+    
+    fig.add_trace(go.Scatter3d(
+        x=x_line_12mb,
+        y=np.full_like(x_line_12mb, y_log_12mb),
+        z=z_line_12mb,
+        mode='lines',
+        line=dict(color='red', width=5),
+        name='L2/Memory Boundary (12MB)',
+        legendrank=2,
+        hovertemplate='L2/Memory Boundary<extra></extra>'
     ))
     
     # Create log2 size tick labels
