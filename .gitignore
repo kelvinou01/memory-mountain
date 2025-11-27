@@ -1,0 +1,7 @@
+
+# pixi environments
+.pixi
+*.egg-info
+plot.html
+bench_results.csv
+bench

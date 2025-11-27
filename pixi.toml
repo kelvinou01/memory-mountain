@@ -1,0 +1,16 @@
+[project]
+authors = ["Kelvin Ou <kelvin.ou.jin.bin@gmail.com>"]
+channels = ["conda-forge"]
+description = "Visualizing spatial and temporal locality on an M1 Mac"
+name = "memory-mountain"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+typer = ">=0.20.0,<0.21"
+matplotlib = ">=3.10.8,<4"
+scipy = ">=1.16.3,<2"
+plotly = ">=6.5.0,<7"
+humanize = ">=4.14.0,<5"
