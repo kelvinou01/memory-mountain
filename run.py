@@ -91,20 +91,20 @@ def visualize(output: str = "plot.html"):
     
 
     # Add red lines tracing the ridges at cache boundaries
-    y_log_192kb = np.log2(192 * 1024)
+    y_log_128kb = np.log2(128 * 1024)
     y_log_12mb = np.log2(12 * 1024 * 1024)
     
-    # Line at 192KB - interpolate Z values along this Y
-    x_line_192kb = np.linspace(X.min(), X.max(), 100)
-    z_line_192kb = griddata((X, Y_log), Z, (x_line_192kb, np.full_like(x_line_192kb, y_log_192kb)), method='linear')
+    # Line at 128KB - interpolate Z values along this Y
+    x_line_128kb = np.linspace(X.min(), X.max(), 100)
+    z_line_128kb = griddata((X, Y_log), Z, (x_line_128kb, np.full_like(x_line_128kb, y_log_128kb)), method='linear')
     
     fig.add_trace(go.Scatter3d(
-        x=x_line_192kb,
-        y=np.full_like(x_line_192kb, y_log_192kb),
-        z=z_line_192kb,
+        x=x_line_128kb,
+        y=np.full_like(x_line_128kb, y_log_128kb),
+        z=z_line_128kb,
         mode='lines',
         line=dict(color='red', width=5),
-        name='L1/L2 Boundary (192KB)',
+        name='L1/L2 Boundary (128KB)',
         legendrank=1,
         hovertemplate='L1/L2 Boundary<extra></extra>'
     ))
@@ -196,7 +196,7 @@ def visualize(output: str = "plot.html"):
 
         <p>We vary spatial locality by changing the stride, and temporal locality by changing the total size of all items copied. </p>
 
-        <p>Looking at the graph, along the size axis, we see ridges — sudden changes in throughput — at the 192KB and 12MB marks. When the working set of the program increases beyond the M1's L1 data cache (192KB), we see sharp drops in performance as we switch to L2. Ditto from L2 (12MB) to main memory. </p>
+        <p>Looking at the graph, along the size axis, we see ridges — sudden changes in throughput — at the 128KB and 12MB marks. When the working set of the program increases beyond the M1's L1 data cache (128KB), we see sharp drops in performance as we switch to L2. Ditto from L2 (12MB) to main memory. </p>
 
         <p>Looking at the stride axis, when the entire working set fits in L2 memory, performance is constant, which I am guessing is due the CPU aggresively <a href="https://en.wikipedia.org/wiki/Prefetching">pre-fetching</a> based on the stride of previous accesses. When the working set can't fit into L2, we see a smooth drop in performance as worsening spatial locality decreases L2 hit rates. I have no idea what causes the huge fluctuations in performance when the entire working set fits into the L1 data cache. </p>
 
